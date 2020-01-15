@@ -1,0 +1,419 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>SB Admin - Dashboard</title>
+
+  <!-- 부가적인 테마 -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="{% static 'vendor/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'css/sb-admin.css' %}" rel="stylesheet">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        td, th{
+            width: 200px;
+            height: 120px;
+            text-align: center;
+            font-size: 20px;
+            font-family: 굴림;
+            background-color:#272727;
+        }
+        .tableCell{
+            width: 100%;
+            height: 100%
+        }
+    </style>
+<script type="text/javascript">
+        var today = new Date();//오늘 날짜//내 컴퓨터 로컬을 기준으로 today에 Date 객체를 넣어줌
+        var date = new Date();//today의 Date를 세어주는 역할
+        function prevCalendar() {//이전 달
+        // 이전 달을 today에 값을 저장하고 달력에 today를 넣어줌
+        //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일
+        //getMonth()는 현재 달을 받아 오므로 이전달을 출력하려면 -1을 해줘야함
+         today = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate());
+         buildCalendar(); //달력 cell 만들어 출력
+        }
+
+        function DayClick(i){
+            console.log(i);
+            var titleName = document.getElementById("myModalLabel");
+            var title = String(i);
+            var tempYear = title.substring(0,4)+"년";
+            var tempMonth = title.substring(4,6)+"월";
+            var tempDay = title.substring(6,8)+"일";
+            titleName.innerHTML = tempYear+tempMonth+tempDay;
+        }
+        function nextCalendar() {//다음 달
+            // 다음 달을 today에 값을 저장하고 달력에 today 넣어줌
+            //today.getFullYear() 현재 년도//today.getMonth() 월  //today.getDate() 일
+            //getMonth()는 현재 달을 받아 오므로 다음달을 출력하려면 +1을 해줘야함
+             today = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate());
+             buildCalendar();//달력 cell 만들어 출력
+        }
+        function buildCalendar(){//현재 달 달력 만들기
+            var doMonth = new Date(today.getFullYear(),today.getMonth(),1);
+            //이번 달의 첫째 날,
+            //new를 쓰는 이유 : new를 쓰면 이번달의 로컬 월을 정확하게 받아온다.
+            //new를 쓰지 않았을때 이번달을 받아오려면 +1을 해줘야한다.
+            //왜냐면 getMonth()는 0~11을 반환하기 때문
+            var lastDate = new Date(today.getFullYear(),today.getMonth()+1,0);
+            //이번 달의 마지막 날
+            //new를 써주면 정확한 월을 가져옴, getMonth()+1을 해주면 다음달로 넘어가는데
+            //day를 1부터 시작하는게 아니라 0부터 시작하기 때문에
+            //대로 된 다음달 시작일(1일)은 못가져오고 1 전인 0, 즉 전달 마지막일 을 가져오게 된다
+            var tbCalendar = document.getElementById("calendar");
+            //날짜를 찍을 테이블 변수 만듬, 일 까지 다 찍힘
+            var tbCalendarYM = document.getElementById("tbCalendarYM");
+            //테이블에 정확한 날짜 찍는 변수
+            //innerHTML : js 언어를 HTML의 권장 표준 언어로 바꾼다
+            //new를 찍지 않아서 month는 +1을 더해줘야 한다.
+            var year = today.getFullYear();
+            var tempMonth = today.getMonth() + 1;
+            var month
+            if( tempMonth < 10 ){ month = "0"+tempMonth; }
+            else{ month = tempMonth; }
+            tbCalendarYM.innerHTML = "<font color=white>"+ today.getFullYear() + "년 " + (today.getMonth() + 1) + "월";
+
+             /*while은 이번달이 끝나면 다음달로 넘겨주는 역할*/
+            while (tbCalendar.rows.length > 2) {
+            //열을 지워줌
+            //기본 열 크기는 body 부분에서 2로 고정되어 있다.
+                  tbCalendar.deleteRow(tbCalendar.rows.length-1);
+                  //테이블의 tr 갯수 만큼의 열 묶음은 -1칸 해줘야지
+                //30일 이후로 담을달에 순서대로 열이 계속 이어진다.
+             }
+             var row = null;
+             row = tbCalendar.insertRow();
+             //테이블에 새로운 열 삽입//즉, 초기화
+             var cnt = 0;// count, 셀의 갯수를 세어주는 역할
+            // 1일이 시작되는 칸을 맞추어 줌
+             for (i=0; i<doMonth.getDay(); i++) {
+             /*이번달의 day만큼 돌림*/
+                  cell = row.insertCell();//열 한칸한칸 계속 만들어주는 역할
+                  cnt = cnt + 1;//열의 갯수를 계속 다음으로 위치하게 해주는 역할
+             }
+            /*달력 출력*/
+
+             for (i=1; ; i++) {
+             //1일부터 마지막 일까지 돌림
+                  cell = row.insertCell();//열 한칸한칸 계속 만들어주는 역할
+                  var tempDay = i;
+                  var day;
+                  if( tempDay < 10 ){ day = "0" + i; }
+                  else{ day = tempDay; }
+                  var temp = "<div id = "+ "tableCell" +" data-toggle='modal' data-target='#myModal' "+ " onclick ="+"'DayClick("+year+month+day+")'>";
+                  if(i<=lastDate.getDate()){cell.innerHTML = temp+"<font color=white>"+i+"</div>";}//셀을 1부터 마지막 day까지 HTML 문법에 넣어줌
+                  cnt = cnt + 1;//열의 갯수를 계속 다음으로 위치하게 해주는 역할
+                  if (cnt % 7 == 1) {/*일요일 계산*/
+                  //1주일이 7일 이므로 일요일 구하기
+                  //월화수목금토일을 7로 나눴을때 나머지가 1이면 cnt가 1번째에 위치함을 의미한다
+                  cell.innerHTML = temp + "<font color=#F79DC2>"+i+"</div>"+"<div id = 'temp'>"+"dfjoejofsjoejo"+"</div>";
+                //1번째의 cell에만 색칠#F79DC2
+            }
+              if (cnt%7 == 0){/* 1주일이 7일 이므로 토요일 구하기*/
+                  //월화수목금토일을 7로 나눴을때 나머지가 0이면 cnt가 7번째에 위치함을 의미한다
+                  if(i<=lastDate.getDate()){
+                    cell.innerHTML = temp+"<font color=skyblue>"+i+"</div>"+"<div id = 'temp'>"+"dfjoejofsjoejo"+"</div>";}
+                  //7번째의 cell에만 색칠
+                   row = calendar.insertRow();
+                   //토요일 다음에 올 셀을 추가
+				   if(i>=lastDate.getDate()){break;}
+              }
+              /*오늘의 날짜에 노란색 칠하기*/
+              /*오늘의 날짜에 노란색 칠하기*/
+              if (today.getFullYear() == date.getFullYear()
+                 && today.getMonth() == date.getMonth()
+                 && i == date.getDate()) {
+                  //달력에 있는 년,달과 내 컴퓨터의 로컬 년,달이 같고, 일이 오늘의 일과 같으면
+                cell.bgColor = "#FAF58C";//셀의 배경색을 노랑으로
+				cell.innerHTML = "<div id = tableCell>"+"<div id = 'today'>"+"<font color='white'>"+date.getDate()+"</font>"+"</div>"+"</div>"+"<div id = 'temp'>"+"dfjoejofsjoejo"+"</div>";
+               }
+             }
+        }
+    </script>
+
+
+
+
+</head>
+
+<body id="page-top">
+
+  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+    <a class="navbar-brand mr-1" href="/"><img src="{% static './cuttingimg.png' %}"></a>
+
+    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navbar Search -->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Navbar -->
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown no-arrow mx-1">
+        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-bell fa-fw"></i>
+          <span class="badge badge-danger">9+</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown no-arrow mx-1">
+        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-envelope fa-fw"></i>
+          <span class="badge badge-danger">7</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user-circle fa-fw"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+          <a class="dropdown-item" href="#">Settings</a>
+          <a class="dropdown-item" href="#">Activity Log</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+  </nav>
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+
+    <ul class="sidebar navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-fw fa-folder"></i>
+              <span>로그인</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+              <h6 class="dropdown-header">로그인 목록:</h6>
+              <a class="dropdown-item" href="accounts/login">로그인</a>
+              <a class="dropdown-item" href="register.html">회원등록</a>
+              <a class="dropdown-item" href="forgot-password.html">비밀번호 찾기</a>
+
+            </div>
+          </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>나의 모임</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link" href="/post">
+          <i class="fas fa-fw fa-table"></i>
+          <span>친구를 찾자!</span></a>
+      </li>
+    </ul>
+
+    <div id="content-wrapper">
+
+      <div class="container-fluid">
+
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <p>모임 달력</p>
+          </li>
+        </ol>
+
+
+      </div>
+      <table id="calendar" border="3" align="center" style="border-color:black">
+          <tr><!-- label은 마우스로 클릭을 편하게 해줌 -->
+              <td><label onclick="prevCalendar()"><font color ="#FFFFFF"><</label></td>
+              <td align="center" id="tbCalendarYM" colspan="5">
+
+              <font color ="#FFFFFF">yyyy년 m월</td>
+              <td><label onclick="nextCalendar()"><font color ="#FFFFFF">>
+
+              </label></td>
+          </tr>
+          <tr>
+              <td align="center"><font color ="#F79DC2">일</td>
+              <td align="center"><font color ="#FFFFFF">월</td>
+              <td align="center"><font color ="#FFFFFF">화</td>
+              <td align="center"><font color ="#FFFFFF">수</td>
+              <td align="center"><font color ="#FFFFFF">목</td>
+              <td align="center"><font color ="#FFFFFF">금</td>
+              <td align="center"><font color ="skyblue">토</td>
+          </tr>
+      </table>
+      <!-- /.container-fluid -->
+
+      <!-- Sticky Footer -->
+      <footer class="sticky-footer">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright © Your Website 2019</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- /.content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Page level plugin JavaScript-->
+  <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
+  <script src="{% static 'vendor/datatables/jquery.dataTables.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin.min.js' %}"></script>
+
+  <!-- Demo scripts for this page-->
+  <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+  <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>
+  <script language="javascript" type="text/javascript">
+    buildCalendar();//
+</script>
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel"></h4><button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-primary bjbutton" data-toggle="modal" data-target="#createparty">
+              모임 만들기!
+          </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal" id="createparty">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">모임을 만들어요!</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form action="/action_page.php">
+          <div class="form-group">
+            <label for="email">모임 제목:</label>
+            <input type="text" class="form-control" placeholder="모임의 제목을 적어주세요!" id="party-name">
+          </div>
+          <div class="form-group">
+            <label for="comment">모임 내용:</label>
+            <textarea class="form-control" rows="5" id="party-content"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="date">모집 제한 날짜:</label>
+            <input type="date" class="form-control" placeholder="언제까지 모집할거에요?" id="date">
+          </div>
+          <div class="form-group">
+            <label for="min-people">최소 인원:</label>
+            <input type="number" class="form-control" placeholder="최소 몇명이에요?" id="min-peolpe">
+          </div>
+          <div class="form-group">
+            <label for="max-people">최대 인원:</label>
+            <input type="number" class="form-control" placeholder="최대 몇명이죠?" id="max-people">
+          </div>
+
+            <button type="submit" class="btn btn-primary"><a href=“write.php">모임 생성!</a></button>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<script>
+
+</script>
+</body>
+
+</html>

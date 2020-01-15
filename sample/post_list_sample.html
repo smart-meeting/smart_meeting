@@ -1,0 +1,27 @@
+{% extends 'post/base.html' %}
+
+{% block content %}
+<a href="/">메인으로</a><br>
+<a href="new">글 작성</a><br>
+
+<br>
+{% for post in posts %}
+
+    <a href="detail/{{post.id}}">{{post.title}}</a><br>
+    작성자 : {{post.author}}<br>
+    시간 : {{post.time}}<br>
+    유형 : {{post.type_meet}}<br>
+    장소 : {{post.place}}<br>
+    작성날짜 : {{post.created_at}}<br>
+<form action="{% url 'post:join_post' post.pk%}" method='post' >
+    {% csrf_token %}
+    <input type="submit" value="참여">
+</form>
+<form action="{% url 'post:unjoin_post' post.pk%}" method='post' >
+    {% csrf_token %}
+    <input type="submit" value="탈퇴">
+</form>
+<br>
+{% endfor %}
+
+{% endblock %}

@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>SB Admin - Tables</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+
+  <!-- Page level plugin CSS-->
+  <link href="{% static 'vendor/datatables/dataTables.bootstrap4.css' %}" rel="stylesheet">
+
+  <!-- Custom styles for this template-->
+  <link href="{% static 'css/sb-admin.css' %}" rel="stylesheet">
+  <style>
+  .bjbutton{
+    margin-left:47rem;
+  }
+  </style>
+</head>
+
+<body id="page-top">
+
+  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+      <a class="navbar-brand mr-1" href="/"><img src="{% static './cuttingimg.png' %}"></a>
+
+    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navbar Search -->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Navbar -->
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown no-arrow mx-1">
+        <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-bell fa-fw"></i>
+          <span class="badge badge-danger">9+</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="alertsDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown no-arrow mx-1">
+        <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-envelope fa-fw"></i>
+          <span class="badge badge-danger">7</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="messagesDropdown">
+          <a class="dropdown-item" href="#">Action</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user-circle fa-fw"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+          <a class="dropdown-item" href="#">Settings</a>
+          <a class="dropdown-item" href="#">Activity Log</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+  </nav>
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="sidebar navbar-nav">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="pagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-fw fa-folder"></i>
+              <span>로그인</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="pagesDropdown">
+                <h6 class="dropdown-header">로그인 목록:</h6>
+                <a class="dropdown-item" href="/accounts/login">로그인</a>
+                <a class="dropdown-item" href="register.html">회원등록</a>
+                <a class="dropdown-item" href="forgot-password.html">비밀번호 찾기</a>
+            </div>
+          </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/">
+          <i class="fas fa-fw fa-tachometer-alt"></i>
+          <span>나의 모임</span>
+        </a>
+      </li>
+      
+      <li class="nav-item active">
+        <a class="nav-link" href="/post">
+          <i class="fas fa-fw fa-table"></i>
+          <span>친구를 찾자!</span></a>
+      </li>
+    </ul>
+
+    <div id="content-wrapper">
+
+      <div class="container-fluid">
+
+        <!-- DataTables Example -->
+        <div class="card mb-3">
+          <div class="card-header-1"> <!-- 새로만든 css-->
+            <i class="fas fa-heart"></i>
+            사람이 필요해요! 
+            
+            <button type="button" class="btn btn-primary bjbutton" data-toggle="modal" data-target="#createparty">
+              모임 만들기!
+            </button>
+
+          </div>
+            
+          <div class="card-body">
+            <div class="table-responsive">
+                {% for post in posts %}
+              <div class="card">
+                <div class="card-header-2">{{post.title}}</div>  <!-- 새로만든 css-->
+                <div class="card-body">{{post.content}}</div>
+                <div class="card-footer"><b>장소:</b> {{post.place}} &nbsp &nbsp <b>지역</b>:제주특별자치도 &nbsp &nbsp <b>시간:{{post.time}}</b></div>
+              </div>
+                {% endfor %}
+              <!-- <div class="card">
+                <div class="card-header-2">롤하실분!.</div>
+                <div class="card-body">~~ 술집! 늦게까지 마시다 갈분 구합니다! 보드게임도 해요!</div>
+                <div class="card-footer"><b>장소:</b> 제주시청-어디어디술집 &nbsp &nbsp <b>지역</b>:제주특별자치도 &nbsp &nbsp <b>시간:2020-3-4 09:30</b></div>
+              </div>
+              <div class="card">
+                <div class="card-header-2">운동가실분!.</div>
+                <div class="card-body">~~ 술집! 늦게까지 마시다 갈분 구합니다! 보드게임도 해요!</div>
+                <div class="card-footer"><b>장소:</b> 제주시청-어디어디술집 &nbsp &nbsp <b>지역</b>:제주특별자치도 &nbsp &nbsp <b>시간:2020-3-4 09:30</b></div>
+              </div> -->
+              
+            </div>
+          </div>
+        </div>
+        <div class="modal" id="createparty">
+          <div class="modal-dialog">
+            <div class="modal-content">
+        
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">모임을 만들어요!</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+        
+              <!-- Modal body -->
+              <div class="modal-body">
+                <form action="/action_page.php">
+                  <div class="form-group">
+                    <label for="email">모임 제목:</label>
+                    <input type="text" class="form-control" placeholder="모임의 제목을 적어주세요!" id="party-name">
+                  </div>
+                  <div class="form-group">
+                    <label for="comment">모임 내용:</label>
+                    <textarea class="form-control" rows="5" id="party-content"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="date">모집 제한 날짜:</label>
+                    <input type="date" class="form-control" placeholder="언제까지 모집할거에요?" id="date">
+                  </div>
+                  <div class="form-group">
+                    <label for="min-people">최소 인원:</label>
+                    <input type="number" class="form-control" placeholder="최소 몇명이에요?" id="min-peolpe">
+                  </div>
+                  <div class="form-group">
+                    <label for="max-people">최대 인원:</label>
+                    <input type="number" class="form-control" placeholder="최대 몇명이죠?" id="max-people">
+                  </div>
+  
+                  <button type="submit" class="btn btn-primary">모임 생성!</button>
+                </form>
+              </div>
+        
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+              </div>
+        
+            </div>
+          </div>
+        </div>
+        
+       
+
+      </div>
+      <!-- /.container-fluid -->
+
+      <!-- Sticky Footer -->
+      <footer class="sticky-footer">
+        <div class="container my-auto">
+          <div class="copyright text-center my-auto">
+            <span>Copyright © Your Website 2019</span>
+          </div>
+        </div>
+      </footer>
+
+    </div>
+    <!-- /.content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+          <a class="btn btn-primary" href="login.html">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+  <!-- Page level plugin JavaScript-->
+  <script src="{% static 'vendor/datatables/jquery.dataTables.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.js' %}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{% static 'js/sb-admin.min.js' %}"></script>
+
+  <!-- Demo scripts for this page-->
+  <script src="{% static 'js/demo/datatables-demo.js' %}"></script>
+
+</body>
+
+</html>

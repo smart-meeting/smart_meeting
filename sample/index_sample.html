@@ -1,0 +1,15 @@
+{% extends 'main/base.html' %}
+
+{% block content %}
+<a href="post">게시물</a>
+<a href="accounts/login">로그인</a>
+<a href="accounts/logout">로그아웃</a>
+<br><br>
+{{user.username}}님의 일정<br><br>
+{% for s in sche %}
+제목 : {{s.title}}<br>
+시간 : {{s.time}}<br>
+<br>
+{% endfor %}
+
+{% endblock %}

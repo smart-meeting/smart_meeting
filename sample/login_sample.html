@@ -1,0 +1,12 @@
+{% extends 'accounts/base.html' %}
+
+{% block content %}
+로그인 <br>
+<a href="../../">뒤로가기</a> <br>
+<form method="POST" action="{% url 'accounts:login' %}">
+    {% csrf_token %}
+    ID : {{ form.username }} <br>
+    PW : <input name="{{ form.password.html_name }}" type="password"><br>
+    <input type="submit" value="로그인">
+</form>
+    {% endblock %}

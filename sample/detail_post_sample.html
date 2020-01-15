@@ -1,0 +1,24 @@
+{% extends 'post/base.html' %}
+
+{% block content %}
+<h1>
+    {{posts.title}}
+</h1>
+작성자 : {{posts.author}}<br>
+시간 ; {{posts.time}}<br>
+유형 : {{posts.type_meet}}<br>
+장소 : {{posts.place}}<br>
+내용 : {{posts.content}}<br>
+최소/최대 인원 : {{posts.min_count}}/{{posts.max_count}}<br>
+현재인원 : {{count}}<br>
+작성날짜 : {{posts.created_at}}<br>
+<br>
+참여인원
+{% for join in joins %}
+    {{join.user}}, 
+{% endfor %}
+<br>
+
+<a href="../../">뒤로가기</a>
+
+{% endblock %}

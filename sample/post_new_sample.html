@@ -1,0 +1,17 @@
+{% extends 'post/base.html' %}
+
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    제목 : {{ form.title }}<br>
+    시간 : {{ form.time }}<br>
+    유형 : {{ form.type_meet }}<br>
+    장소 : {{ form.place }}<br>
+    내용 : {{ form.content }}<br>
+    최소 인원 : {{ form.min_count }}<br>
+    최대 인원 : {{ form.max_count }}<br>
+    
+    <input type="submit" value="저장">
+</form>
+<a href="./">뒤로가기</a>
+{% endblock %}
